@@ -1,0 +1,70 @@
+/* Frame-wide floating layer is click-through; the backdrop opts back into
+   pointer events while open. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 12vh;
+  background: color-mix(in srgb, black 35%, transparent);
+  pointer-events: auto;
+}
+
+.panel {
+  width: min(640px, calc(100vw - 32px));
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--dsh-border, #3a3a3a);
+  border-radius: 12px;
+  background: var(--dsh-surface, #1e1e1e);
+  box-shadow: 0 16px 48px color-mix(in srgb, black 45%, transparent);
+}
+
+.input {
+  border: none;
+  outline: none;
+  padding: 14px 16px;
+  font-size: 15px;
+  color: inherit;
+  background: transparent;
+  border-bottom: 1px solid var(--dsh-border, #3a3a3a);
+}
+
+.list {
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.row {
+  padding: 8px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.selected {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.empty {
+  margin: 0;
+  padding: 16px;
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.hint {
+  margin: 0;
+  padding: 8px 16px;
+  font-size: 12px;
+  opacity: 0.55;
+  border-top: 1px solid var(--dsh-border, #3a3a3a);
+}
