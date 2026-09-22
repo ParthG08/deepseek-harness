@@ -1,0 +1,23 @@
+{
+  "name": "dsh-profile-web",
+  "private": true,
+  "dependencies": {
+    "@deepseek-ai/dsh-client-session-quick-switch": "link:/Users/parth.gupta/deepseek-harness/packages/client/session-quick-switch",
+    "dsh-approval-hotkeys": "^0.1.6",
+    "dsh-cursor-subscription": "^0.6.6",
+    "dsh-task-worktree": "^0.4.2"
+  },
+  "dsh": {
+    "profile": {
+      "bundles": [
+        "@deepseek-ai/dsh-base",
+        "@deepseek-ai/dsh-web-app",
+        "@deepseek-ai/dsh-client-session-quick-switch",
+        "dsh-cursor-subscription",
+        "dsh-task-worktree",
+        "dsh-approval-hotkeys"
+      ],
+      "patchReload": "live"
+    }
+  }
+}

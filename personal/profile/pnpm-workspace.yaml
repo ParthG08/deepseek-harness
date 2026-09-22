@@ -1,0 +1,11 @@
+packages:
+  - .
+
+nodeLinker: hoisted
+autoInstallPeers: false
+
+# pnpm 11 gates installs behind a 24-hour minimumReleaseAge. The Cursor
+# subscription plugin ships fixes quickly (0.6.6 fixed the webServer inject
+# error), so exempt it by name and always take the latest release.
+minimumReleaseAgeExclude:
+  - dsh-cursor-subscription

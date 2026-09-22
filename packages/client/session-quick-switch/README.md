@@ -1,6 +1,6 @@
 # @deepseek-ai/dsh-client-session-quick-switch
 
-A starter dsh Web-client plugin: press **Cmd/Ctrl+K**, type to fuzzy-search your
+A dsh Web-client plugin: press **Cmd/Ctrl+K**, type to fuzzy-search your
 Sessions by title, and press **Enter** to switch to the highlighted one.
 
 This is a **client (browser-half) plugin** — it adds a UI surface, so it uses the
@@ -31,20 +31,15 @@ src/client/locales.ts        # en + zh dictionaries
 src/client/QuickSwitch.module.css
 ```
 
-## Build (requires a harness source checkout)
+## Build
 
 The client build preset `packages/client/tsdown.client.ts` resolves packages by
-scanning `packages/*/*/package.json`, so this package **must sit under
-`packages/client/` in a checkout** to build. Sync it there first:
+scanning `packages/*/*/package.json`, so this package builds only inside the
+harness checkout it lives in:
 
 ```sh
 # from the repo root
-bash tools/deepseek-harness/sync.sh plugin-push session-quick-switch
-```
-
-Then, in the checkout:
-
-```sh
+git switch feat/session-quick-switch
 corepack enable
 pnpm install
 pnpm run build          # or: pnpm --filter @deepseek-ai/dsh-client-session-quick-switch bundle
@@ -69,7 +64,16 @@ dsh web
 
 ## Status
 
-Starter, **not yet built or run against the live harness.** APIs are taken from
-the harness source at the recorded version (`0.1.5-rc.2` line). Expect to adjust
-`tsconfig.json` project references and, if the purity gate rejects an import,
-declare it under `dsh.client.external`.
+**Built and installed.** The live `web` profile manifest
+(`~/.dsh/profiles/web/package.json`) lists this package in `dsh.profile.bundles`,
+so it is compiled and loaded by the running harness.
+
+Still to verify: a manual pass over the Cmd/Ctrl+K overlay in the live UI. APIs
+are taken from the harness source at the recorded version (`0.1.5-rc.2` line). If
+the purity gate rejects an import on a future rebuild, declare it under
+`dsh.client.external`.
+
+### Related
+
+- [personal/setup.md](../../../personal/setup.md) — build workflow, dev loop, and
+  profile sync rules.
