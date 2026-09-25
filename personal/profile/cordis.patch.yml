@@ -1,4 +1,32 @@
 # Your patch layer for this dsh profile, applied after every bundle layer:
 # a top-level YAML array of loader patch entries (id-targeted config
 # overrides, disables, and insert lists; `!!js` expressions allowed).
-[]
+
+# Model pinning by workspace (plugin: personal/plugins/workspace-model-pin).
+#
+# Paths are absolute and machine-specific, which is why the rules live here
+# rather than in the plugin's own bundle layer. A session whose cwd is under
+# `match` may only use the providers listed; a request from any other provider
+# is rewritten to `default`. Every model of an allowed provider stays
+# selectable. Longest matching prefix wins.
+- id: workspace-model-pin
+  config:
+    rules:
+      # Learning repo — DeepSeek only.
+      - match: /Users/parth.gupta/Desktop/personal/personal_repos/learn
+        providers:
+          - deepseek-official
+        default:
+          provider: deepseek-official
+          model: deepseek-v4-flash
+          reasoningEffort: high
+      # Work repos — Cursor only. Any Cursor model is allowed; this entry is the
+      # fallback route used when a session would otherwise start elsewhere.
+      - match: /Users/parth.gupta/Desktop/Khatabook
+        providers:
+          - cursor-subscription
+        default:
+          provider: cursor-subscription
+          model: composer-2.5
+    notice: true
+    useSessionController: true

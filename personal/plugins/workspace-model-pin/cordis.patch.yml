@@ -1,0 +1,12 @@
+# dsh-workspace-model-pin bundle layer.
+#
+# Inserts the plugin row into the web profile bundle roster. The row carries no
+# rules here on purpose: the rules name absolute machine paths, so they belong
+# in the profile patch (`~/.dsh/profiles/web/cordis.patch.yml`, replicated at
+# `personal/profile/cordis.patch.yml`), which targets this row's `id` and
+# replaces its whole config value.
+#
+# With no rules the plugin loads inert and logs one line saying so.
+- insert:
+    - id: workspace-model-pin
+      name: dsh-workspace-model-pin

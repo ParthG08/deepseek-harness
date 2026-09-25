@@ -5,7 +5,8 @@
     "@deepseek-ai/dsh-client-session-quick-switch": "link:/Users/parth.gupta/deepseek-harness/packages/client/session-quick-switch",
     "dsh-approval-hotkeys": "^0.1.6",
     "dsh-cursor-subscription": "^0.6.6",
-    "dsh-task-worktree": "^0.4.2"
+    "dsh-task-worktree": "^0.4.2",
+    "dsh-workspace-model-pin": "link:/Users/parth.gupta/deepseek-harness/personal/plugins/workspace-model-pin"
   },
   "dsh": {
     "profile": {
@@ -15,7 +16,8 @@
         "@deepseek-ai/dsh-client-session-quick-switch",
         "dsh-cursor-subscription",
         "dsh-task-worktree",
-        "dsh-approval-hotkeys"
+        "dsh-approval-hotkeys",
+        "dsh-workspace-model-pin"
       ],
       "patchReload": "live"
     }

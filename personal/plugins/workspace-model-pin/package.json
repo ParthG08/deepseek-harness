@@ -1,0 +1,31 @@
+{
+  "name": "dsh-workspace-model-pin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DeepSeek Harness plugin: pin each session's model provider family by its working directory (e.g. DeepSeek-only for a learning repo, Cursor-only for a work repo).",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "cordis",
+    "model",
+    "workspace"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

@@ -1,2 +1,5 @@
 ui-onboarding:
   welcomeNoticeVersion: 2026-08-13.1
+agent-default-model:
+  provider: cursor-subscription
+  model: composer-2.5
