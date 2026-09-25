@@ -183,8 +183,9 @@ pnpm install
 pnpm run build:lib:host
 pnpm run build:lib:client
 
-# 4. install into the profile + restart
-dsh plugin --profile web add link:~/deepseek-harness/packages/client/session-quick-switch
+# 4. install into the profile + restart (an absolute path: `dsh` does not
+#    expand `~` in a link: spec)
+dsh plugin --profile web add "link:$(pwd)/packages/client/session-quick-switch"
 dsh web
 ```
 

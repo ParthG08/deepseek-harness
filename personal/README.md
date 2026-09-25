@@ -5,7 +5,9 @@ DeepSeek Harness.
 
 | Path | What it is |
 |------|------------|
+| `commands.md` | build, apply, and restart cheat-sheet — start here when applying a change |
 | `setup.md` | setup notes, plugin build workflow, config layering, caveats |
+| `plugins/` | host-only plugins carried in this repo |
 | `profile/` | replicas of the live `~/.dsh` profile files |
 | `sync.sh` | push/pull those replicas to and from `~/.dsh` |
 | `scripts/list-cursor-models.mjs` | read-only listing of Cursor models |
@@ -17,7 +19,10 @@ git switch feat/session-quick-switch
 bash personal/sync.sh push        # write the profile replicas into ~/.dsh
 ```
 
-Then build and install the client plugin — see [setup.md](setup.md).
+Then build and install the plugins — [commands.md](commands.md) has the full
+sequence, and [setup.md](setup.md) has the install and configuration detail.
+Note that `sync.sh push` does not install plugins: it writes the replicas, and
+the `dsh plugin add` step still has to run.
 
 The client plugin source lives at `packages/client/session-quick-switch/`, not
 here, because the monorepo build preset `packages/client/tsdown.client.ts` only
