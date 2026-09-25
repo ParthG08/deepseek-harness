@@ -2,6 +2,33 @@
 
 DeepSeek Harness is an all-plugin Cordis agent harness. Read [docs/architecture.md](docs/architecture.md) before changing `packages/`; follow [docs/AGENTS.md](docs/AGENTS.md) for documentation.
 
+## Local fork conventions
+
+This checkout is a personal fork pushed to `origin` (`ParthG08/deepseek-harness`),
+whose upstream is `deepseek-ai/deepseek-harness`. Branch roles are fixed:
+
+| Branch | Contents | Rule |
+|--------|----------|------|
+| `master` | mirror of upstream | never commit local work; only fast-forward from `upstream` |
+| `main` | every local customization | commit and push all local work here, and only here |
+
+Local work means the client plugins under `packages/client/`, the host plugins
+and profile replicas under `personal/`, and the build wiring they need
+(`tsconfig.client.json`, `pnpm-lock.yaml`).
+
+Take upstream updates by rebasing `main` onto `master`, never by merging
+upstream into `main`:
+
+```sh
+git fetch upstream
+git switch master && git merge --ff-only upstream/master
+git switch main && git rebase master
+git push origin main
+```
+
+[personal/commands.md](personal/commands.md) carries the build and apply
+commands that put a change into the running harness.
+
 ## Pre-stable APIs and released Session data
 
 Public APIs are pre-stable; update every consumer. [Session version/status](docs/session-format-status.md) defines the authorities. [Adjacent migration](.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.md) may add a version-named successor but never move, overwrite, or delete committed generations; predecessors imply neither fallback nor downgrade support. SQLite uses monotonic `SCHEMA_VERSION`.
