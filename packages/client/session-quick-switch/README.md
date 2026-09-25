@@ -1,7 +1,12 @@
 # @deepseek-ai/dsh-client-session-quick-switch
 
-A dsh Web-client plugin: press **Cmd/Ctrl+K**, type to fuzzy-search your
-Sessions by title, and press **Enter** to switch to the highlighted one.
+A dsh Web-client plugin carrying three global shortcuts:
+
+| Shortcut | Effect |
+|----------|--------|
+| `Cmd/Ctrl+K` | Open the fuzzy Session switcher; type to match a title, `Enter` to switch |
+| `Cmd/Ctrl+B` | Toggle the left sidebar (expanded ⟷ 56px rail) |
+| `Cmd/Ctrl+L` | Toggle the right Sidebar (expanded ⟷ collapsed) |
 
 This is a **client (browser-half) plugin** — it adds a UI surface, so it uses the
 client bundle build pipeline rather than a plain `index.js` host bundle.
@@ -11,7 +16,10 @@ client bundle build pipeline rather than a plain `index.js` host bundle.
 | Piece | Extension point |
 |-------|-----------------|
 | Overlay UI | `shell.overlay` (frame-wide floating layer, declared by `ui-layout`) |
-| Global shortcut | `window` `keydown` for Cmd/Ctrl+K, toggling the overlay store |
+| Session shortcut | `window` `keydown` for Cmd/Ctrl+K, toggling the overlay store |
+| Left column shortcut | `ctx.layout.toggleSidebar()` |
+| Right column shortcut | `ctx.sidebarRight.toggleExpanded()` |
+| Key release | Keyboard Lock API (`navigator.keyboard.lock`) while fullscreen |
 | Session catalog | framework `useSessions` seat (no transport owned here) |
 | Navigation | injected `ctx.uiWorkspace.openSession(sessionId)` |
 
@@ -23,7 +31,7 @@ cordis.patch.yml             # bundle layer: inserts this plugin's Host row
 tsdown.config.ts             # uses ../tsdown.client.ts (MONOREPO-RELATIVE)
 tsconfig.json
 src/index.ts                 # Host half (empty; browser-only plugin)
-src/client/index.ts          # browser half: locale, slot inject, shortcut
+src/client/index.ts          # browser half: locale, slot inject, all three shortcuts
 src/client/QuickSwitch.tsx   # the overlay component
 src/client/store.ts          # shared open/query/highlight view state
 src/client/fuzzy.ts          # dependency-free subsequence matcher
@@ -47,6 +55,22 @@ pnpm run build          # or: pnpm --filter @deepseek-ai/dsh-client-session-quic
 
 The build emits `lib/index.js`, `lib/client.js`, and `lib/types/**`.
 
+## Known Limitations and Deferred Work
+
+- **`Cmd/Ctrl+L` needs a browser that releases the key.** Chromium reserves it
+  for the address bar, so the shortcut is inert in an ordinary tab. It works
+  where the address bar is absent — an installed PWA window — or while the
+  document holds JavaScript-initiated fullscreen, where the Keyboard Lock API
+  releases `KeyL`. Firefox and Safari implement neither Keyboard Lock nor an
+  equivalent, so they always keep the key.
+- **The keyboard lock needs permission.** Chrome 130+ gates it behind a prompt,
+  and it never applies to user-initiated fullscreen (F11, `Ctrl+Cmd+F`); only
+  `element.requestFullscreen()` makes a document eligible.
+- **The shortcuts are fixed rather than configurable.** The package carries no
+  `Config` schema, so deployments cannot rebind them from `cordis.yml`.
+- The package name now understates its contents: it ships the sidebar toggles as
+  well as the Session switcher.
+
 ## Install into the profile
 
 ```sh
@@ -68,9 +92,10 @@ dsh web
 (`~/.dsh/profiles/web/package.json`) lists this package in `dsh.profile.bundles`,
 so it is compiled and loaded by the running harness.
 
-Still to verify: a manual pass over the Cmd/Ctrl+K overlay in the live UI. APIs
-are taken from the harness source at the recorded version (`0.1.5-rc.2` line). If
-the purity gate rejects an import on a future rebuild, declare it under
+Still to verify: a manual pass over the Cmd/Ctrl+K overlay, the two sidebar
+toggles, and the `Cmd/Ctrl+L` keyboard lock in the live UI. APIs are taken from
+the harness source at the recorded version (`0.1.5-rc.2` line). If the purity
+gate rejects an import on a future rebuild, declare it under
 `dsh.client.external`.
 
 ### Related

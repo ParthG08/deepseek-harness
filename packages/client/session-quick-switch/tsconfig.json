@@ -33,6 +33,9 @@
       "path": "../ui-workspace"
     },
     {
+      "path": "../ui-sidebar-right"
+    },
+    {
       "path": "../../core/session"
     }
   ]
