@@ -13,12 +13,14 @@ plugin source lives under `packages/client/`, where the monorepo build finds it.
 | Ref | Contents | Rule |
 |-----|----------|------|
 | `master` | mirror of upstream | never commit here |
-| `feat/session-quick-switch` | our plugin + `personal/` | customization rides a branch |
+| `main` | our plugins + `personal/` | all customization is committed here |
 
 ```sh
 git fetch upstream                    # bring in upstream work
-git merge upstream/master             # fast-forward master
-git rebase upstream/master <branch>   # replay our commits onto newer upstream
+git switch master
+git merge --ff-only upstream/master   # fast-forward master
+git switch main
+git rebase master                     # replay our commits onto newer upstream
 ```
 
 A client (UI) plugin cannot build standalone: the preset
@@ -172,7 +174,7 @@ Verified end-to-end against `0.1.5-rc.2`. Requirements: **Node 22.19+/24**
 ```sh
 # 1. the checkout (this repo)
 cd ~/deepseek-harness
-git switch feat/session-quick-switch
+git switch main
 
 # 2. Node + pnpm
 nvm use 22.23.2 && corepack enable && corepack prepare pnpm@11.7.0 --activate

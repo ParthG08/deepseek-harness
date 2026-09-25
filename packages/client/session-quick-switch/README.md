@@ -47,7 +47,7 @@ harness checkout it lives in:
 
 ```sh
 # from the repo root
-git switch feat/session-quick-switch
+git switch main
 corepack enable
 pnpm install
 pnpm run build          # or: pnpm --filter @deepseek-ai/dsh-client-session-quick-switch bundle

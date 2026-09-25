@@ -15,7 +15,7 @@ DeepSeek Harness.
 ## Restore on a new machine
 
 ```sh
-git switch feat/session-quick-switch
+git switch main
 bash personal/sync.sh push        # write the profile replicas into ~/.dsh
 ```
 
