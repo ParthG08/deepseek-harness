@@ -82,6 +82,45 @@ next start instead — DSH writes all logging to **stderr** and keeps no log fil
 dsh web 2>&1 | tee ~/dsh-web.log
 ```
 
+## Run the Electron desktop app
+
+```sh
+pnpm run desktop        # rebuild client plugin bundles, then launch Electron
+pnpm run desktop:start  # launch against the existing build, no rebuild
+```
+
+`desktop` points `DSH_HOME` at the live `~/.dsh` (override with `DSH_HOME=...`),
+so the desktop window lists the **same sessions** as `dsh web`. Its profile is a
+disposable development project that composes the built-in desktop bundles plus
+`@deepseek-ai/dsh-client-session-quick-switch` (Ctrl+K session switch, Ctrl+B
+left sidebar, Ctrl+L right sidebar). Override the extra plugins with
+`DSH_DESKTOP_DEV_PLUGINS="pkg-a pkg-b"` or `-- --plugins "pkg-a pkg-b"`; each
+name must resolve from the workspace `node_modules`.
+
+Client plugin code is **not** hot-reloaded in the desktop app (`client-hmr` is
+disabled by the desktop overlay), so `desktop` rebuilds the client bundles first
+and then starts; restarting the app is what makes new plugin code live. The
+browser `dsh web` server shares the same `~/.dsh`, so stop it before launching
+the desktop app — two backends must not share the session store at once.
+
+`desktop` needs the Node the repo build uses (`nvm use 22.23.2`, or Node 24).
+On an older system Node the `build:lib:client` step fails before launch
+(`tsdown` cannot load its config); use `pnpm run desktop:start` to launch the
+existing build instead, and fix Node before rebuilding.
+
+**A fresh clone needs `pnpm install` and a one-time `pnpm run build` first.**
+`node_modules/`, `lib/`, `apps/web/dist/`, and the Electron build under
+`apps/desktop/.desktop-build/` are all gitignored. `desktop` only rebuilds the
+client plugin bundles; it assumes the Electron shell (`apps/desktop/lib`), the
+Desktop host (`apps/desktop-host/lib`), and the Web frontend (`apps/web/dist`)
+already exist. To build everything and launch in one step, use
+`pnpm run dev:desktop` (it runs the full build, then starts).
+
+Only workspace packages can be added this way. Plugins installed into the `web`
+profile from npm (`dsh-cursor-subscription`, `dsh-task-worktree`,
+`dsh-approval-hotkeys`) are not in the desktop project and would need to be
+installed there separately.
+
 ## Install a plugin into the profile
 
 First-time install, or after adding a new plugin to the repo:

@@ -706,9 +706,19 @@ export function createSeedMetadata(seedDir: string, release: DesktopRelease): vo
  * Create metadata for the unpackaged development project that links the current workspace.
  * @param projectDir - Disposable development profile directory.
  * @param release - Release identity shared by the linked CLI package and Electron shell.
+ * @param plugins - Extra profile bundles composed after the built-in desktop bundles.
+ *   Development only: packaged releases derive their plugin list from the installed profile.
  */
-export function createDevelopmentProjectMetadata(projectDir: string, release: DesktopRelease): void {
+export function createDevelopmentProjectMetadata(
+  projectDir: string,
+  release: DesktopRelease,
+  plugins: readonly string[] = [],
+): void {
   mkdirSync(projectDir, { recursive: true, mode: 0o700 })
+  for (const plugin of plugins) assertPackageName(plugin)
+  if (new Set(plugins).size !== plugins.length) {
+    throw new Error('desktop development: plugin bundle list contains a duplicate package')
+  }
   const manifest = {
     name: PROJECT_NAME,
     private: true,
@@ -717,7 +727,7 @@ export function createDevelopmentProjectMetadata(projectDir: string, release: De
       [DSH_PACKAGE]: release.version,
       [DESKTOP_HOST_PACKAGE]: release.version,
     },
-    dsh: { profile: { bundles: [...DESKTOP_PROFILE_BUNDLES] } },
+    dsh: { profile: { bundles: [...DESKTOP_PROFILE_BUNDLES, ...plugins] } },
   }
   writeJson(join(projectDir, 'package.json'), manifest)
   writeFileSync(join(projectDir, 'pnpm-workspace.yaml'), workspaceFile(), { mode: 0o600 })

@@ -82,7 +82,15 @@ async function launchElectron(projectDir: string): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  const { values } = parseArgs({ options: { 'skip-build': { type: 'boolean', default: false } } })
+  const { values } = parseArgs({
+    options: {
+      'skip-build': { type: 'boolean', default: false },
+      plugins: { type: 'string' },
+    },
+  })
+  const plugins = (values.plugins ?? process.env.DSH_DESKTOP_DEV_PLUGINS ?? '')
+    .split(/[\s,]+/u)
+    .filter(plugin => plugin !== '')
   if (!values['skip-build']) {
     await runPackageScript('build', REPOSITORY_ROOT)
     await runPackageScript('build', APP_ROOT)
@@ -108,7 +116,9 @@ async function main(): Promise<void> {
     hostDir: join(REPOSITORY_ROOT, 'apps', 'desktop-host'),
     dependencyDir: join(REPOSITORY_ROOT, 'node_modules', '.pnpm', 'node_modules'),
     release,
+    plugins,
   })
+  if (plugins.length > 0) console.log(`desktop development: plugins ${plugins.join(', ')}`)
   await launchElectron(projectDir)
 }
 

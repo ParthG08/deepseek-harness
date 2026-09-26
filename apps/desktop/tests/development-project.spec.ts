@@ -67,6 +67,58 @@ describe('desktop development project', () => {
     expect(manifest.dependencies['@deepseek-ai/dsh-desktop-host']).toBe('1.2.3')
   })
 
+  it('composes extra development plugin bundles after the built-in desktop bundles', () => {
+    const root = temporaryRoot()
+    const cli = join(root, 'apps', 'cli')
+    const host = join(root, 'apps', 'desktop-host')
+    const dependencies = join(root, 'workspace-dependencies')
+    mkdirSync(join(cli, 'lib'), { recursive: true })
+    mkdirSync(join(host, 'lib'), { recursive: true })
+    mkdirSync(dependencies, { recursive: true })
+    writeFileSync(join(cli, 'package.json'), '{"name":"@deepseek-ai/dsh","version":"1.2.3"}\n')
+    writeFileSync(join(host, 'package.json'), '{"name":"@deepseek-ai/dsh-desktop-host","version":"1.2.3"}\n')
+    writeFileSync(join(host, 'lib', 'index.js'), '')
+
+    const project = prepareDevelopmentProject({
+      projectDir: join(root, 'development'),
+      cliDir: cli,
+      hostDir: host,
+      dependencyDir: dependencies,
+      release: release(),
+      plugins: ['@deepseek-ai/dsh-client-session-quick-switch'],
+    })
+    const manifest = JSON.parse(readFileSync(join(project, 'package.json'), 'utf8')) as {
+      dsh: { profile: { bundles: string[] } }
+    }
+    expect(manifest.dsh.profile.bundles).toEqual([
+      '@deepseek-ai/dsh-base',
+      '@deepseek-ai/dsh-web-app',
+      '@deepseek-ai/dsh-client-session-quick-switch',
+    ])
+  })
+
+  it('rejects a duplicate development plugin bundle', () => {
+    const root = temporaryRoot()
+    const cli = join(root, 'apps', 'cli')
+    const host = join(root, 'apps', 'desktop-host')
+    const dependencies = join(root, 'workspace-dependencies')
+    mkdirSync(join(cli, 'lib'), { recursive: true })
+    mkdirSync(join(host, 'lib'), { recursive: true })
+    mkdirSync(dependencies, { recursive: true })
+    writeFileSync(join(cli, 'package.json'), '{"name":"@deepseek-ai/dsh","version":"1.2.3"}\n')
+    writeFileSync(join(host, 'package.json'), '{"name":"@deepseek-ai/dsh-desktop-host","version":"1.2.3"}\n')
+    writeFileSync(join(host, 'lib', 'index.js'), '')
+
+    expect(() => prepareDevelopmentProject({
+      projectDir: join(root, 'development'),
+      cliDir: cli,
+      hostDir: host,
+      dependencyDir: dependencies,
+      release: release(),
+      plugins: ['@deepseek-ai/dsh-client-session-quick-switch', '@deepseek-ai/dsh-client-session-quick-switch'],
+    })).toThrow(/duplicate/u)
+  })
+
   it('rejects a CLI package from another release', () => {
     const root = temporaryRoot()
     const cli = join(root, 'apps', 'cli')

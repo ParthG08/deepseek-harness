@@ -32,6 +32,8 @@ export interface DevelopmentProjectOptions {
   readonly dependencyDir: string
   /** Release identity written into the disposable project metadata. */
   readonly release: DesktopRelease
+  /** Extra profile bundles composed after the built-in desktop bundles. */
+  readonly plugins?: readonly string[]
 }
 
 function readManifest(path: string): PackageManifest {
@@ -106,7 +108,7 @@ export function prepareDevelopmentProject(options: DevelopmentProjectOptions): s
   }
 
   removeOwnedPath(options.projectDir)
-  createDevelopmentProjectMetadata(options.projectDir, options.release)
+  createDevelopmentProjectMetadata(options.projectDir, options.release, options.plugins ?? [])
   const destinationModules = join(options.projectDir, 'node_modules')
   mkdirSync(destinationModules, { recursive: true })
   mirrorDependencyLinks(options.dependencyDir, destinationModules)
