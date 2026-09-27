@@ -11,6 +11,7 @@ DeepSeek Harness.
 | `profile/` | replicas of the live `~/.dsh` profile files |
 | `sync.sh` | push/pull those replicas to and from `~/.dsh` |
 | `scripts/list-cursor-models.mjs` | read-only listing of Cursor models |
+| `scripts/dsh-setup-providers.sh` | add free/alternative LLM providers to `~/.dsh` and verify their keys |
 
 ## Restore on a new machine
 
